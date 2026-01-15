@@ -1,0 +1,20 @@
+name: FlorestDiscordPro
+version: '1.0'
+main: ru.florestdev.florestDiscordPro.FlorestDiscordPro
+api-version: '1.21'
+prefix: FLORESTDISCORDPRO
+load: STARTUP
+authors: [ FlorestDev ]
+description: A simple plugin for Minecraft-Discord connection (forked from FlorestTelegramPRO).
+softdepend: [LuckPerms, SkinsRestorer]
+commands:
+  florestdiscord:
+    aliases:
+      - fdp
+    description: Main command of the plugin
+    permission-message: Нет права florestdiscord.admin
+    permission: florestdiscord.admin
+permissions:
+  florestdiscord.admin:
+    default: op
+    description: Главное разрешение плагина.
