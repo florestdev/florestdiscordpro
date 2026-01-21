@@ -22,6 +22,7 @@ bot_status:
 discord_message_format: "[MC] **{player}**: {message}"
 minecraft_discord_format: "§9[Discord] §f{discord_name}: {discord_message}"
 minecraft_discord_format_with_reply: "§9[Discord] §f{discord_name}: {discord_message} §7(ответ на {author_reply})"
+minecraft_discord_reaction_received: "[Discord] {discord_name} reacted with emoji {reaction} on {author}'s message: {message}"
 
 # Сообщения при старте/выключении сервера
 hello_message: "🚀 **Сервер запущен!** Всем удачной игры."

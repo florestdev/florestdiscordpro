@@ -2,8 +2,10 @@ package ru.florestdev.florestDiscordPro;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -53,6 +55,43 @@ public class DiscordListener extends ListenerAdapter {
                 Bukkit.broadcastMessage(formatted)
         );
     }
+
+    @Override
+    public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event) {
+        // Игнорируем ботов
+        if (event.getUser() == null || event.getUser().isBot()) return;
+
+        // Проверяем канал
+        if (!event.getChannel().getId().equals(plugin.getConfig().getString("discord_channel_id")))
+            return;
+
+        String messageId = event.getMessageId();
+        String reactorName = event.getUser().getName();
+
+        // Определяем emoji
+        String emoji;
+        if (event.getReaction().getEmoji().getType().name().equals("UNICODE")) {
+            emoji = event.getReaction().getEmoji().asUnicode().getName();
+        } else {
+            emoji = ":" + event.getReaction().getEmoji().asCustom().getName() + ":";
+        }
+
+        String format = plugin.getConfig().getString("minecraft_discord_reaction_received");
+
+        event.retrieveMessage().queue(message -> {
+            String formatted = format
+                    .replace("{discord_name}", reactorName)
+                    .replace("{reaction}", emoji)
+                    .replace("{author}", message.getAuthor().getName())
+                    .replace("{message}", message.getContentRaw());
+
+            Bukkit.getScheduler().runTask(plugin, () ->
+                    Bukkit.broadcastMessage(formatted)
+            );
+        });
+
+    }
+
 
     // Обработка редактирования (вместо handleEdited)
     @Override
