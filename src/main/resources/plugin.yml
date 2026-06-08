@@ -1,5 +1,5 @@
 name: FlorestDiscordPro
-version: '1.1'
+version: '1.2'
 main: ru.florestdev.florestDiscordPro.FlorestDiscordPro
 api-version: '1.21'
 prefix: FLORESTDISCORDPRO
@@ -18,3 +18,4 @@ permissions:
   florestdiscord.admin:
     default: op
     description: Главное разрешение плагина.
+folia-supported: true

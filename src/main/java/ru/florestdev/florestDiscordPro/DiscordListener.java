@@ -6,12 +6,17 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class DiscordListener extends ListenerAdapter {
@@ -22,6 +27,8 @@ public class DiscordListener extends ListenerAdapter {
         this.plugin = plugin;
     }
     Runtime runtime = Runtime.getRuntime();
+    private final Map<String, Long> typingCooldown = new ConcurrentHashMap<>();
+    private final long COOLDOWN_MS = 10000; // 10 секунд
 
     // Обработка новых сообщений (вместо handleMessage)
     @Override
@@ -92,6 +99,27 @@ public class DiscordListener extends ListenerAdapter {
 
     }
 
+    @Override
+    public void onUserTyping(UserTypingEvent event) {
+        if (event.getUser().isBot()) return;
+
+        String requiredChannel = plugin.getConfig().getString("discord_channel_id");
+        if (!event.getChannel().getId().equals(requiredChannel)) return;
+
+        // Антиспам
+        String userId = event.getUser().getId();
+        if (typingCooldown.getOrDefault(userId, 0L) + 10000 > System.currentTimeMillis()) return;
+        typingCooldown.put(userId, System.currentTimeMillis());
+
+        String discordName = event.getUser().getName();
+
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            String format = plugin.getConfig().getString("minecraft_discord_typing_format");
+            String message = format.replace("{discord_name}", discordName);
+            String colored = ChatColor.translateAlternateColorCodes('&', message);
+            Bukkit.broadcastMessage(colored);
+        });
+    }
 
     // Обработка редактирования (вместо handleEdited)
     @Override

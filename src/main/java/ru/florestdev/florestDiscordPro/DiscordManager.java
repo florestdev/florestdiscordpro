@@ -19,7 +19,12 @@ public class DiscordManager {
     public void start() {
         try {
             JDABuilder builder = JDABuilder.createDefault(token)
-                    .enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT)
+                    .enableIntents(
+                            GatewayIntent.GUILD_MESSAGES,      // это для сообщений
+                            GatewayIntent.MESSAGE_CONTENT,     // это для чтения содержимого сообщений
+                            GatewayIntent.GUILD_MESSAGE_TYPING,    // 👈 ЭТО ДЛЯ ПЕЧАТИ В СЕРВЕРНЫХ КАНАЛАХ
+                            GatewayIntent.DIRECT_MESSAGE_TYPING    // 👈 ЭТО ДЛЯ ПЕЧАТИ В ЛС
+                    )
                     .setStatus(OnlineStatus.valueOf(plugin.getConfig().getString("bot_status.status_type", "ONLINE").toUpperCase()))
                     .setActivity(Activity.playing(plugin.getConfig().getString("bot_status.activity_text", "FlorestWorld").replace("{online}", String.valueOf(plugin.getServer().getOnlinePlayers().size()))))
 
