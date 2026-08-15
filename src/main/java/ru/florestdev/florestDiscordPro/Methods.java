@@ -2,17 +2,17 @@ package ru.florestdev.florestDiscordPro;
 
 import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Webhook;
-import net.dv8tion.jda.api.entities.WebhookClient;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.skinsrestorer.api.SkinsRestorerProvider;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Methods {
@@ -21,6 +21,32 @@ public class Methods {
 
     public Methods(FlorestDiscordPro plugin) {
         this.plugin = plugin;
+    }
+
+    /**
+     * Отправка сообщения какому-то челу по нику. Если тот на сервере)))
+     */
+    public void sendDiscordMessageUser(String username, String message) {
+
+        if (message == null || message.isEmpty()) return;
+
+        // Проверяем, инициализирован ли бот
+        if (plugin.getDiscordManager() == null || plugin.getDiscordManager().getJda() == null) {
+            return;
+        }
+
+        @Unmodifiable List<User> users = plugin.getDiscordManager().getJda().getUsersByName(username, false);
+        if (users.isEmpty()) {
+            return;
+        }
+
+        User user = users.getFirst();
+        user.openPrivateChannel()
+                .flatMap(channel -> channel.sendMessage(message))
+                .queue(
+                        success -> {plugin.getLogger().info("Sent user message.");},
+                        error -> {error.printStackTrace();}
+                );
     }
 
     /**

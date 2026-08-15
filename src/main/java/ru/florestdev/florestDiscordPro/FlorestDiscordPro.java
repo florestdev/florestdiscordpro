@@ -7,12 +7,22 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
+
 public final class FlorestDiscordPro extends JavaPlugin {
 
     private Methods methods;
     private DiscordManager discordManager;
 
     public static Essentials essentials;
+
+    private TwoFactorDatabase twoFactorDatabase;
+
+    public TwoFactorDatabase getTwoFactorDatabase() {return  twoFactorDatabase;}
+
+    private TwoFactorHandler twoFactorHandler;
+
+    public TwoFactorHandler getTwoFactorHandler() {return  twoFactorHandler;}
 
     @Override
     public void onEnable() {
@@ -29,9 +39,14 @@ public final class FlorestDiscordPro extends JavaPlugin {
             return;
         }
 
+
+        this.twoFactorDatabase = new TwoFactorDatabase(this);
+        this.twoFactorHandler = new TwoFactorHandler(this);
         // Запускаем Дискорд бота и сохраняем в поле класса
         this.discordManager = new DiscordManager(this, token);
         this.discordManager.start();
+
+        Objects.requireNonNull(getCommand("2fa")).setExecutor(new TwoFactorCommand(this));
 
         // 3. Регистрация событий и команд
         getServer().getPluginManager().registerEvents(new ChatListener(this, methods), this);

@@ -14,8 +14,14 @@ commands:
     description: Main command of the plugin
     permission-message: Нет права florestdiscord.admin
     permission: florestdiscord.admin
+  2fa:
+    description: 2fa command of FDP
+    aliases:
+      - 2fa_ds
 permissions:
   florestdiscord.admin:
     default: op
     description: Главное разрешение плагина.
+  2fa.fdp.admin:
+    default: op
 folia-supported: true

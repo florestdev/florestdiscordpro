@@ -13,6 +13,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 public class PlayerTracker implements Listener {
@@ -43,6 +44,24 @@ public class PlayerTracker implements Listener {
         String message = plugin.getConfig().getString("join_leave.human_joined", "📥 **{user}** зашел на сервер.")
                 .replace("{user}", player.getName());
 
+        TwoFactorDatabase.TwoFactorData data = plugin.getTwoFactorDatabase().getByUsername(player.getName());
+
+        if (data != null && data.enabled) {
+            if (data.isBlocked(3, 600000)) {
+                player.kickPlayer("§cСлишком много попыток. Подождите 10 минут.");
+                return;
+            }
+
+            String code = String.format("%06d", new Random().nextInt(1000000));
+            long expires = System.currentTimeMillis() + 120000;
+            plugin.getTwoFactorDatabase().updateCode(player.getName(), code, expires);
+
+            methods.sendDiscordMessageUser(data.telegramId, plugin.getConfig().getString("2fa_message").replace("{username}", player.getName()).replace("{ip}", player.getAddress().getAddress().getHostAddress()).replace("{code}", code));
+            plugin.getTwoFactorHandler().freezePlayer(player);
+        } else {
+            return;
+        }
+
         // Добавляем префикс
         if (plugin.getConfig().getBoolean("support_prefix")) {
             message = message.replace("{prefix}", getPlayerPrefix(player));
@@ -57,6 +76,9 @@ public class PlayerTracker implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        if (plugin.getTwoFactorHandler().isFrozen(event.getPlayer())) {
+            plugin.getTwoFactorHandler().unfreezePlayer(event.getPlayer());
+        }
         if (!plugin.getConfig().getBoolean("join_leave.enabled", true)) return;
 
         Player player = event.getPlayer();
