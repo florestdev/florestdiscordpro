@@ -106,3 +106,5 @@ player_message: "Now "
 2fa_passed: "2FA is already verified."
 2fa_verified: "You successfully entered your account!"
 2fa_failed: "You failed 2FA. If you lost access to your Discord account, write to the Server Administration."
+
+discord_tg_message: "[Discord] {discord_name} -> {discord_message}"

@@ -6,7 +6,7 @@
 
     <groupId>ru.florestdev</groupId>
     <artifactId>FlorestDiscordPro</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
     <packaging>jar</packaging>
 
     <name>FlorestDiscordPro</name>
@@ -76,6 +76,10 @@
             <id>enginehub-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -129,6 +133,11 @@
             <artifactId>paperlib</artifactId>
             <version>1.0.7</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.florestdev</groupId>
+            <artifactId>floresttelegramprominecraft</artifactId>
+            <version>14.0-stable</version>
         </dependency>
     </dependencies>
 </project>

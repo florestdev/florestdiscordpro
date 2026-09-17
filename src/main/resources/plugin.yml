@@ -1,12 +1,12 @@
 name: FlorestDiscordPro
-version: '1.2'
+version: '1.3'
 main: ru.florestdev.florestDiscordPro.FlorestDiscordPro
 api-version: '1.21'
 prefix: FLORESTDISCORDPRO
 load: STARTUP
 authors: [ FlorestDev ]
 description: A simple plugin for Minecraft-Discord connection (forked from FlorestTelegramPRO).
-softdepend: [LuckPerms, SkinsRestorer]
+softdepend: [LuckPerms, SkinsRestorer, FlorestTelegramPRO]
 commands:
   florestdiscord:
     aliases:

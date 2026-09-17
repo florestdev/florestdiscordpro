@@ -61,6 +61,11 @@ public class DiscordListener extends ListenerAdapter {
         Bukkit.getScheduler().runTask(plugin, () ->
                 Bukkit.broadcastMessage(formatted)
         );
+
+        // Отправляем в чат ТГ
+        if (plugin.getDiscordToTG() != null) {
+            plugin.getDiscordToTG().sendMessage(userTag, messageText);
+        }
     }
 
     @Override

@@ -24,6 +24,16 @@ public final class FlorestDiscordPro extends JavaPlugin {
 
     public TwoFactorHandler getTwoFactorHandler() {return  twoFactorHandler;}
 
+    public static DiscordToTG discordToTG;
+
+    public DiscordToTG getDiscordToTG() {
+        return discordToTG;
+    }
+
+    public void updateDiscordToTg(DiscordToTG discordToTG) {
+        this.discordToTG = discordToTG;
+    }
+
     @Override
     public void onEnable() {
         // 1. Сначала сохраняем/грузим конфиг
@@ -79,6 +89,9 @@ public final class FlorestDiscordPro extends JavaPlugin {
                 getLogger().warning("LuckPerms не найден! Функция префиксов будет работать некорректно.");
             }
         }
+
+        // Интеграция с тг
+        getServer().getPluginManager().registerEvents(new ServerStarted(this), this);
 
         essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 
